@@ -10,7 +10,7 @@ import Hits from '../hits/index'
 import PageCounter from '../pageCounter/index'
 import Todo from '../todo/index'
 import initialState from './state'
-import useStateFromDb from '../../hooks/useStateFromDb'
+import useStateWithDb from '../../hooks/useStateWithDb'
 import {UserCtx} from '../../ctx/index'
 import Signin from '../signin/index'
 import Test1 from '../test1/index'
@@ -18,20 +18,17 @@ import Test1 from '../test1/index'
 export default
 ()=>
 {
-  // const [state1,setState1]=useState(initialState)
-  // const [state2,setState2]=useState(initialState)
-  // const [state3,setState3]=useState(initialState)
-  // const [state4,setState4]=useState(initialState)
-  const [state1,setState1]=useStateFromDb(initialState,'state1',true)
-  const [state2,setState2]=useStateFromDb(initialState,'state2',false,state1)
-  const [state3,setState3]=useStateFromDb(initialState,'state3',false,state1)
-  const [state4,setState4]=useStateFromDb(initialState,'state4',false,state1)
+  const [state1,setState1]=useStateWithDb(initialState,'state1')
+  const [state2,setState2]=useStateWithDb(initialState,'state2',state1.login.user)
+  const [state3,setState3]=useStateWithDb(initialState,'state3',state1.login.user)
+  const [state4,setState4]=useStateWithDb(initialState,'state4',state1.login.user)
+  const [state5,setState5]=useStateWithDb(initialState,'state5',state1.login.user)
   const el=
   <Div>
   <UserCtx.Provider value={state1.login.user}>
   <Router>
     <Container>
-      <Header state={state1} setState={setState1}/>
+      <Header state={state2} setState={setState2}/>
     </Container>
     <Container2>
         <Route render=
@@ -46,7 +43,7 @@ export default
               <Route path='/' exact render=
               {
                 ()=>
-                <Abs><Signin state={state1} setState={setState1}/></Abs>
+                <Abs><Signin state={state2} setState={setState2} state1={state1} setState1={setState1}/></Abs>
               }/>
               <Route path='/login' render=
               {
@@ -62,8 +59,8 @@ export default
                   const el=
                   <Abs>
                     <PageCounter
-                    state1={state1} setState1={setState1}
-                    state2={state2} setState2={setState2}/>
+                    state1={state2} setState1={setState2}
+                    state2={state3} setState2={setState3}/>
                   </Abs>
                   return el
                 }
@@ -74,22 +71,22 @@ export default
                 ()=>
                 <Abs>
                   <PageCounter
-                  state1={state3} setState1={setState3}
-                  state2={state4} setState2={setState4}/>
+                  state1={state4} setState1={setState4}
+                  state2={state5} setState2={setState5}/>
                 </Abs>
               }/>
               <Route path='/todos1' render=
               {
                 ()=>
                 <Abs>
-                  <Todo state={state1} setState={setState1}/>
+                  <Todo state={state2} setState={setState2}/>
                 </Abs>
               }/>
               <Route path='/todos2' render=
               {
                 ()=>
                 <Abs>
-                  <Todo state={state2} setState={setState2}/>
+                  <Todo state={state3} setState={setState3}/>
                 </Abs>
               }/>
             </Switch>

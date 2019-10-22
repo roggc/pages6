@@ -32,7 +32,7 @@ mutation ($email:String!,$psswrd:String!,$name:String!)
 `
 
 export default
-({state,setState})=>
+({state,setState,state1,setState1})=>
 {
   const user=useContext(UserCtx)
   const signinCb=
@@ -41,20 +41,26 @@ export default
     let res
     if(res=json.signin.res)
     {
-      setState
+      setState1
       (
         {
-          ...state
+          ...state1
           ,login:
           {
-            ...state.login
+            ...state1.login
             ,user:
             {
-              ...state.login.user
+              ...state1.login.user
               ,name:res.name
               ,email:res.email
             }
           }
+        }
+      )
+      setState
+      (
+        {
+          ...state
           ,signin:
           {
             ...state.signin

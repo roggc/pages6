@@ -45,17 +45,7 @@ export default
   json=>
   {
     let res
-    setState
-    (
-      {
-        ...state
-        ,login:
-        {
-          ...state.login
-          ,fetching:false
-        }
-      }
-    )
+
     if(res=json.login.res)
     {
       setState
@@ -70,7 +60,22 @@ export default
               ...state.login.user
               ,email:res.email
               ,name:res.name
-            }
+            },
+            fetching:false
+          }
+        }
+      )
+    }
+    else
+    {
+      setState
+      (
+        {
+          ...state
+          ,login:
+          {
+            ...state.login
+            ,fetching:false
           }
         }
       )
