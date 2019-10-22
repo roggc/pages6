@@ -13,7 +13,6 @@ import initialState from './state'
 import useStateWithDb from '../../hooks/useStateWithDb'
 import {UserCtx} from '../../ctx/index'
 import Signin from '../signin/index'
-import Test1 from '../test1/index'
 
 export default
 ()=>

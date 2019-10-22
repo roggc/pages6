@@ -1,29 +1,40 @@
-import React,{useState} from 'react'
-import {} from './styled'
+import React from 'react'
+import {Div} from './styled'
 
 export default
-()=>
+({state,setState})=>
 {
-  const [state, setState] = useState({count:0})
-  const handleAlertClick=
+  const incrementCounter=
   ()=>
-  setTimeout
+  setState
   (
-    ()=>
     {
-      alert('You clicked on: ' + state.count)
+      ...state
+      ,counter:
+      {
+        ...state.counter
+        ,count:state.counter.count+1
+      }
     }
-    ,3000
+  )
+  const decrementCounter=
+  ()=>
+  setState
+  (
+    {
+      ...state
+      ,counter:
+      {
+        ...state.counter
+        ,count:state.counter.count-1
+      }
+    }
   )
   const el=
-  <div>
-    <p>You clicked {state.count} times</p>
-    <button onClick={()=>setState({count:state.count+1})}>
-      Click me
-    </button>
-    <button onClick={handleAlertClick}>
-      Show alert
-    </button>
-  </div>
+  <Div>
+    <div>{state.counter.count}</div>
+    <button onClick={incrementCounter}>+</button>
+    <button onClick={decrementCounter}>-</button>
+  </Div>
   return el
 }

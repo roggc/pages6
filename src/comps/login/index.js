@@ -211,7 +211,7 @@ export default
           </div>
           <div className='row'>
             <div>password</div>
-            <div><input onChange={psswrdChange}/></div>
+            <div><input type='password' onChange={psswrdChange}/></div>
           </div>
           <div className='row last'>
             <button onClick={loginClick}>login</button>

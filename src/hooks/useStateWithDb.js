@@ -46,7 +46,7 @@ export default
         if(json.data&& json.data.getState&& json.data.getState.res)
         {
           setState(JSON.parse(json.data.getState.res))
-          //console.log(JSON.parse(json.data.getState.res),'updated client '+key+' with '+email)
+          console.log(JSON.parse(json.data.getState.res),'updated client '+key+' with '+email)
         }
         else
         {
@@ -74,7 +74,7 @@ export default
           const json=await resp.json()
           if(json.data.setState)
           {
-            //console.log(state,'updated db '+key+' with '+email)
+            console.log(state,'updated db '+key+' with '+email)
           }
         }
       }

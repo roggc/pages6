@@ -163,7 +163,7 @@ export default
         </div>
         <div  className='row'>
           <div>password</div>
-          <div><input onChange={passwordChange}/></div>
+          <div><input type='password' onChange={passwordChange}/></div>
         </div>
         <div  className='row last'>
           <div><button onClick={signinClick}>signin</button></div>

@@ -1,6 +1,6 @@
 import React,{useContext} from 'react'
 import {Div} from './styled'
-import Counter from '../counter2/index'
+import Counter from '../counter/index'
 import {UserCtx} from '../../ctx/index'
 
 export default
