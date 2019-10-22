@@ -6,26 +6,36 @@ import {faBars} from '@fortawesome/free-solid-svg-icons'
 import useOuterClick from '../../hooks/useOuterClick'
 
 export default
-({redux:{state:{app},dispatch}})=>
+({state,setState})=>
 {
-  const [state,setState]=useState({showModal:false})
+  const [stateLocal,setStateLocal]=useState({showModal:false})
   const ref=useRef(null)
-  useOuterClick(e=>setState({showModal:false}),ref)
+  useOuterClick(e=>setStateLocal({showModal:false}),ref)
   const toggleShow=
   e=>
-  setState({showModal:!state.showModal})
+  setStateLocal({showModal:!stateLocal.showModal})
   const modalClick=
   (e)=>
   e.stopPropagation()
   const linkClick=
   route=>e=>
-  dispatch({type:'APP_SET_ROUTE_VAR',val:route})
+  setState
+  (
+    {
+      ...state
+      ,app:
+      {
+        ...state.app
+        ,route
+      }
+    }
+  )
   const el=
   <Row>
-    <div>{app.route}</div>
+    <div>{state.app.route}</div>
     <Float onClick={toggleShow} ref={ref}>
       <FontAwesomeIcon icon={faBars}/>
-      <Modal className={state.showModal?'show':'notShow'} onClick={modalClick}>
+      <Modal className={stateLocal.showModal?'show':'notShow'} onClick={modalClick}>
         <div onClick={toggleShow}><Link to='/' onClick={linkClick('signin')}>signin</Link></div>
         <div onClick={toggleShow}><Link to='/login' onClick={linkClick('login')}>login</Link></div>
         <div onClick={toggleShow}><Link to='/about' onClick={linkClick('about')}>about</Link></div>

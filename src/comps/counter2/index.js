@@ -2,17 +2,37 @@ import React from 'react'
 import {Div} from './styled'
 
 export default
-({redux:{state:{count},dispatch}})=>
+({state,setState})=>
 {
   const incrementCounter=
   ()=>
-  dispatch({type:'COUNT_INCREMENT'})
+  setState
+  (
+    {
+      ...state
+      ,counter:
+      {
+        ...state.counter
+        ,count:state.counter.count+1
+      }
+    }
+  )
   const decrementCounter=
   ()=>
-  dispatch({type:'COUNT_DECREMENT'})
+  setState
+  (
+    {
+      ...state
+      ,counter:
+      {
+        ...state.counter
+        ,count:state.counter.count-1
+      }
+    }
+  )
   const el=
   <Div>
-    <div>{count.count}</div>
+    <div>{state.counter.count}</div>
     <button onClick={incrementCounter}>+</button>
     <button onClick={decrementCounter}>-</button>
   </Div>

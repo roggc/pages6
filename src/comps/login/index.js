@@ -39,17 +39,41 @@ mutation
 `
 
 export default
-({redux:{state:{login},dispatch}})=>
+({state,setState})=>
 {
   const loginCb=
   json=>
   {
     let res
-    dispatch({type:'LOGIN_SET_FETCHING',val:false})
+    setState
+    (
+      {
+        ...state
+        ,login:
+        {
+          ...state.login
+          ,fetching:false
+        }
+      }
+    )
     if(res=json.login.res)
     {
-      dispatch({type:'LOGIN_SET_USER',val:{email:res.email,name:res.name}})
-      //dispatch({type:'LOGIN_SET_SHOW_LOGIN',val:false})
+      setState
+      (
+        {
+          ...state
+          ,login:
+          {
+            ...state.login
+            ,user:
+            {
+              ...state.login.user
+              ,email:res.email
+              ,name:res.name
+            }
+          }
+        }
+      )
     }
   }
   const logoutCb=
@@ -57,46 +81,110 @@ export default
   {
     if(json.logout)
     {
-      dispatch({type:'LOGIN_RESET_CREDENTIALS'})
-      //dispatch({type:'LOGIN_SET_SHOW_LOGIN',val:true})
-      dispatch({type:'LOGIN_RESET_USER'})
+      setState
+      (
+        {
+          ...state
+          ,login:
+          {
+            ...state.login
+            ,credentials:
+            {
+              ...state.login.credentials
+              ,email:''
+              ,psswrd:''
+            }
+            ,user:undefined
+            ,fetching:false
+          }
+        }
+      )
     }
-    dispatch({type:'LOGIN_SET_FETCHING',val:false})
+    else
+    {
+      setState
+      (
+        {
+          ...state
+          ,login:
+          {
+            ...state.login
+            ,fetching:false
+          }
+        }
+      )
+    }
   }
   const loginClick=
   e=>
   {
-    dispatch({type:'LOGIN_SET_FETCHING',val:true})
-    graphql(loginQuery)(login.credentials)(apiUrl)(loginCb)
+    setState
+    (
+      {
+        ...state
+        ,login:
+        {
+          ...state.login
+          ,fetching:true
+        }
+      }
+    )
+    graphql(loginQuery)(state.login.credentials)(apiUrl)(loginCb)
   }
   const emailChange=
   e=>
-  dispatch
+  setState
   (
     {
-      type:'LOGIN_SET_EMAIL'
-      ,val:e.target.value
+      ...state
+      ,login:
+      {
+        ...state.login
+        ,credentials:
+        {
+          ...state.login.credentials
+          ,email:e.target.value
+        }
+      }
     }
   )
   const psswrdChange=
   e=>
-  dispatch
+  setState
   (
     {
-      type:'LOGIN_SET_PSSWRD'
-      ,val:e.target.value
+      ...state
+      ,login:
+      {
+        ...state.login
+        ,credentials:
+        {
+          ...state.login.credentials
+          ,psswrd:e.target.value
+        }
+      }
     }
   )
   const logoutClick=
   e=>
   {
-    dispatch({type:'LOGIN_SET_FETCHING',val:true})
+    setState
+    (
+      {
+        ...state
+        ,login:
+        {
+          ...state.login
+          ,fetching:true
+        }
+      }
+    )
     graphql(logoutQuery)({})(apiUrl)(logoutCb)
   }
   const el=
   <Div>
     {
-      login.fetching?
+      state.login.fetching?
       <div className='modal'>
         <div className='center'>
           <Spinner/>
@@ -107,18 +195,18 @@ export default
     <div className='center'>
       <div className='center2'>
       {
-        login.user?
+        state.login.user?
         <div className='row'>
-          hola {login.user.name}.&nbsp;<a onClick={logoutClick}><strong>logout</strong></a>
+          hola {state.login.user.name}.&nbsp;<a onClick={logoutClick}><strong>logout</strong></a>
         </div>:
         <div>
           <div className='row'>
             <div>email</div>
-            <div><input value={login.email} onChange={emailChange}/></div>
+            <div><input onChange={emailChange}/></div>
           </div>
           <div className='row'>
             <div>password</div>
-            <div><input value={login.psswrd} onChange={psswrdChange}/></div>
+            <div><input onChange={psswrdChange}/></div>
           </div>
           <div className='row last'>
             <button onClick={loginClick}>login</button>

@@ -1,13 +1,12 @@
-import React,{useReducer,useEffect,useCallback} from 'react'
+import React,{useState,useEffect,useCallback} from 'react'
 import {Div} from './styled'
 import Spinner from '../spinner/index'
 import initialState from './state'
-import reducer from './reducer'
 
 export default
 ()=>
 {
-  const [state,dispatch]=useReducer(reducer,initialState)
+  const [state,setState]=useState(initialState)
   const fetchData=
   useCallback
   (
@@ -15,7 +14,18 @@ export default
     {
       fetch('https://hn.algolia.com/api/v1/search?query=react')
       .then(resp=>resp.json())
-      .then(json=>dispatch({type:'FETCH_DATA',val:json.hits}))
+      .then
+      (
+        json=>
+        setState
+        (
+          {
+            ...state
+            ,hits:json.hits
+            ,loaded:true
+          }
+        )
+      )
     }
     ,[]
   )
@@ -41,7 +51,14 @@ export default
             href={item.url}
             onMouseOver=
             {
-              ()=>dispatch({type:'SET_HOVER',val:item.objectID})
+              ()=>
+              setState
+              (
+                {
+                  ...state
+                  ,hover:item.objectID
+                }
+              )
             }
             className={state.hover===item.objectID?'hover':''}
             >{item.title}</a>

@@ -1,4 +1,4 @@
-import React,{useReducer,useRef,useEffect,useContext} from 'react'
+import React,{useRef,useEffect,useContext} from 'react'
 import {Div} from './styled'
 import check from '../../img/check.png'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
@@ -6,26 +6,65 @@ import {faTrashAlt,faPlus} from '@fortawesome/free-solid-svg-icons'
 import {UserCtx} from '../../ctx/index'
 
 export default
-({redux:{state:{todo},dispatch}})=>
+({state,setState})=>
 {
   const user=useContext(UserCtx)
   const addTodo=
   ()=>
-  dispatch({type:'TODO_SHOW_NEW_TODO'})
+  setState
+  (
+    {
+      ...state
+      ,todo:
+      {
+        ...state.todo
+        ,showNewTodo:true
+      }
+    }
+  )
   const confirmAdd=
   e=>
   {
-    const value=inputRef.current.value
-    if(value!=='')
+    const value=state.todo.inputValue
+    if(value&& value!=='')
     {
-      dispatch({type:'TODO_ADD_TODO',text:value})
+      e.stopPropagation()
+      const todos=state.todo.todos.filter(todo=>true)
+      todos.push({text:value,done:false})
+      setState
+      (
+        {
+          ...state
+          ,todo:
+          {
+            ...state.todo
+            ,todos
+            ,showNewTodo:false
+            ,inputValue:''
+          }
+        }
+      )
+    }
+    else
+    {
+      cancelAdd()
     }
   }
   const cancelAdd=
   ()=>
   {
-    dispatch({type:'TODO_NOT_SHOW_NEW_TODO'})
-    dispatch({type:'TODO_SET_INPUT_VALUE',val:''})
+    setState
+    (
+      {
+        ...state
+        ,todo:
+        {
+          ...state.todo
+          ,showNewTodo:false
+          ,inputValue:''
+        }
+      }
+    )
   }
   const allowFocus=
   e=>
@@ -36,36 +75,166 @@ export default
     if(e.key==='Enter')
     {
       confirmAdd(e)
-      cancelAdd()
     }
   }
   const setDone=
   i=>e=>
-  dispatch({type:'TODO_SET_DONE_TODO',val:i})
+  {
+    const todos=state.todo.todos.filter
+    (
+      todo=>true
+    )
+    todos.some
+    (
+      (todo,index)=>
+      {
+        if(index===i)
+        {
+          todo.done=true
+          return true
+        }
+      }
+    )
+    setState
+    (
+      {
+        ...state
+        ,todo:
+        {
+          ...state.todo
+          ,todos
+        }
+      }
+    )
+  }
   const clearTodos=
   ()=>
-  dispatch({type:'TODO_SHOW_CLEAR_TODOS'})
+  setState
+  (
+    {
+      ...state
+      ,todo:
+      {
+        ...state.todo
+        ,showClearTodos:true
+      }
+    }
+  )
   const confirmClear=
   e=>
-  dispatch({type:'TODO_CLEAR_TODOS'})
+  {
+    e.stopPropagation()
+    setState
+    (
+      {
+        ...state,
+        todo:
+        {
+          ...state.todo,
+          todos:[],
+          showClearTodos:false
+        }
+      }
+    )
+  }
   const cancelClear=
   ()=>
-  dispatch({type:'TODO_NOT_SHOW_CLEAR_TODOS'})
+  setState
+  (
+    {
+      ...state
+      ,todo:
+      {
+        ...state.todo
+        ,showClearTodos:false
+      }
+    }
+  )
   const inputChange=
   e=>
-  dispatch({type:'TODO_SET_INPUT_VALUE',val:e.target.value.toUpperCase()})
+  setState
+  (
+    {
+      ...state
+      ,todo:
+      {
+        ...state.todo
+        ,inputValue:e.target.value.toUpperCase()
+      }
+    }
+  )
   const deleteTodo=
   i=>e=>
-  dispatch({type:'TODO_DELETE_TODO',val:i})
+  {
+    const todos=state.todo.todos.filter
+    (
+      (todo,index)=>
+      {
+        if(index!==i)
+        {
+          return true
+        }
+      }
+    )
+    setState
+    (
+      {
+        ...state
+        ,todo:
+        {
+          ...state.todo
+          ,todos
+        }
+      }
+    )
+  }
   const setDoneAll=
   e=>
-  dispatch({type:'TODO_SHOW_SET_DONE_ALL'})
+  setState
+  (
+    {
+      ...state
+      ,todo:
+      {
+        ...state.todo
+        ,showSetDoneAll:true
+      }
+    }
+  )
   const cancelSetDoneAll=
   e=>
-  dispatch({type:'TODO_NOT_SHOW_SET_DONE_ALL'})
+  setState
+  (
+    {
+      ...state
+      ,todo:
+      {
+        ...state.todo
+        ,showSetDoneAll:false
+      }
+    }
+  )
   const confirmSetDoneAll=
   e=>
-  dispatch({type:'TODO_SET_DONE_ALL'})
+  {
+    const todos=state.todo.todos.filter(todo=>true)
+    todos.forEach
+    (
+      todo=>
+      todo.done=true
+    )
+    setState
+    (
+      {
+        ...state
+        ,todo:
+        {
+          ...state.todo
+          ,todos
+        }
+      }
+    )
+  }
   const inputRef=useRef(null)
   useEffect
   (
@@ -80,17 +249,17 @@ export default
   const el=
   <Div>
     {
-      todo.showNewTodo?
+      state.todo.showNewTodo?
       <div className='modal' onClick={cancelAdd} onKeyDown={keyDown}>
         <div className='center'>
-          <input ref={inputRef} onClick={allowFocus} onChange={inputChange} value={todo.inputValue}/>
+          <input ref={inputRef} onClick={allowFocus} onChange={inputChange} value={state.todo.inputValue}/>
         </div>
         <div className='center'><button onClick={confirmAdd}><FontAwesomeIcon icon={faPlus}/></button></div>
       </div>:
       ''
     }
     {
-      todo.showClearTodos?
+      state.todo.showClearTodos?
       <div className='modal' onClick={cancelClear}>
         <div className='center'>CLEAR ALL?</div>
         <div className='center'>
@@ -100,7 +269,7 @@ export default
       ''
     }
     {
-      todo.showSetDoneAll?
+      state.todo.showSetDoneAll?
       <div className='modal' onClick={cancelSetDoneAll}>
         <div className='center'>CHECK ALL?</div>
         <div className='center'>
@@ -122,7 +291,7 @@ export default
         <button onClick={clearTodos}><FontAwesomeIcon icon={faTrashAlt}/>/All</button>
         <ul>
           {
-            todo.todos.map
+            state.todo.todos.map
             (
               (todo,i)=>
               <li key={i}>

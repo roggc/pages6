@@ -4,7 +4,7 @@ import Counter from '../counter2/index'
 import {UserCtx} from '../../ctx/index'
 
 export default
-({redux1,redux2})=>
+({state1,setState1,state2,setState2})=>
 {
   const user=useContext(UserCtx)
   const el=
@@ -12,8 +12,8 @@ export default
   {
     user?
     <div>
-      <Counter redux={redux1}/>
-      <Counter redux={redux2}/>
+      <Counter state={state1} setState={setState1}/>
+      <Counter state={state2} setState={setState2}/>
     </div>:
     <div className='pageCounter-center'>you must &nbsp;<strong>login</strong>&nbsp; please</div>
   }

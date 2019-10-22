@@ -32,7 +32,7 @@ mutation ($email:String!,$psswrd:String!,$name:String!)
 `
 
 export default
-({redux:{state:{signin},dispatch}})=>
+({state,setState})=>
 {
   const user=useContext(UserCtx)
   const signinCb=
@@ -41,29 +41,100 @@ export default
     let res
     if(res=json.signin.res)
     {
-      dispatch({type:'LOGIN_SET_USER',val:{name:res.name,email:res.email}})
+      setState
+      (
+        {
+          ...state
+          ,login:
+          {
+            ...state.login
+            ,user:
+            {
+              ...state.login.user
+              ,name:res.name
+              ,email:res.email
+            }
+          }
+          ,signin:
+          {
+            ...state.signin
+            ,fetching:false
+          }
+        }
+      )
     }
-    dispatch({type:'SIGNIN_SET_FETCHING',val:false})
   }
   const signinClick=
   e=>
   {
-    dispatch({type:'SIGNIN_SET_FETCHING',val:true})
-    graphql(signinQuery)(signin.queryVars)(apiUrl)(signinCb)
+    setState
+    (
+      {
+        ...state
+        ,signin:
+        {
+          ...state.signin
+          ,fetching:true
+        }
+      }
+    )
+    graphql(signinQuery)(state.signin.queryVars)(apiUrl)(signinCb)
   }
   const nameChange=
   e=>
-  dispatch({type:'SIGNIN_SET_NAME',val:e.target.value})
+  setState
+  (
+    {
+      ...state
+      ,signin:
+      {
+        ...state.signin
+        ,queryVars:
+        {
+          ...state.signin.queryVars
+          ,name:e.target.value
+        }
+      }
+    }
+  )
   const emailChange=
   e=>
-  dispatch({type:'SIGNIN_SET_EMAIL',val:e.target.value})
+  setState
+  (
+    {
+      ...state
+      ,signin:
+      {
+        ...state.signin
+        ,queryVars:
+        {
+          ...state.signin.queryVars
+          ,email:e.target.value
+        }
+      }
+    }
+  )
   const passwordChange=
   e=>
-  dispatch({type:'SIGNIN_SET_PASSWORD',val:e.target.value})
+  setState
+  (
+    {
+      ...state
+      ,signin:
+      {
+        ...state.signin
+        ,queryVars:
+        {
+          ...state.signin.queryVars
+          ,psswrd:e.target.value
+        }
+      }
+    }
+  )
   const el=
   <Div>
   {
-    signin.fetching?
+    state.signin.fetching?
     <ModalSpinner />:
     ''
   }
