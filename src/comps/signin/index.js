@@ -57,18 +57,18 @@ export default
           }
         }
       )
-      setState
-      (
-        {
-          ...state
-          ,signin:
-          {
-            ...state.signin
-            ,fetching:false
-          }
-        }
-      )
     }
+    setState
+    (
+      {
+        ...state
+        ,signin:
+        {
+          ...state.signin
+          ,fetching:false
+        }
+      }
+    )
   }
   const signinClick=
   e=>
